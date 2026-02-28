@@ -12,9 +12,7 @@ videos_extensions = [".mp4", ".mov", ".avi", ".wmv", ".mkv"]
 archives_extensions = [".zip", ".rar", ".lzip", ".7z", ".tar", ".gz", ".unitypackage", ".vrm", ".fbx",".lock"]
 audio_extensions = [".mp3", ".wav", ".aiff", ".pcm",".aac", ".ogg", ".wma"]
 
-#Don't forget to change your "your_name"
-your_name = "Users"
-downloads = Path(f"C:\\Users\\{your_name}\\Downloads")
+downloads = Path.home() / "Downloads"
 
 for folder in necessary_folders:
     (downloads / folder).mkdir(exist_ok=True)
