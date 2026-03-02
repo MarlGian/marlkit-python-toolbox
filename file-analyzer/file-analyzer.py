@@ -58,3 +58,5 @@ elif arg3 == "--count-num":
     print(number_count(txtfile))
 elif arg3 == "--word-freq":
     print(word_frequency(txtfile))
+else:
+     print("Flags: --count-let, --count-word, --count-num, --word-freq")
