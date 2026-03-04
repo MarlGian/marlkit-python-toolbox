@@ -1,67 +1,39 @@
+from pathlib import Path
+import shutil
 import sys
 
+#Add folders if you want more variety.
+necessary_folders = ["Images", "Documents", "Videos", "Executables", "Archives", "Audios"]
 
-def word_count(files):
-    with open(files, "r") as file:
-        word_count = file.read().replace(",", " ").split()
+#Expand if necessary, if some file extensions are not included.
+documents_extension = [".txt", ".pdf", ".docx", ".html", ".xlsx", ".csv",".sql",".doc", ".pptx", ".java", ".py", ".md",".ovpn"]
+images_extension = [".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"]
+executables_extensions = [".exe", ".deb", ".iso", ".msi", ".apk"]
+videos_extensions = [".mp4", ".mov", ".avi", ".wmv", ".mkv"]
+archives_extensions = [".zip", ".rar", ".lzip", ".7z", ".tar", ".gz", ".unitypackage", ".vrm", ".fbx",".lock"]
+audio_extensions = [".mp3", ".wav", ".aiff", ".pcm",".aac", ".ogg", ".wma"]
 
-    return (f"{len(word_count)} total words in {files}")
+user_path = sys.argv[1]
 
+downloads = Path.home() / user_path
 
-def letter_count(file):
-    with open(file, "r") as f:
-        letter_counts = f.read()
-        letters = [char for char in letter_counts if char.isalpha()]
+for folder in necessary_folders:
+    (downloads / folder).mkdir(exist_ok=True)
 
-    return (f"{len(letters)} total letters in {file}")
+file_types = {
+    "Documents": documents_extension,
+    "Images": images_extension,
+    "Executables": executables_extensions,
+    "Videos": videos_extensions,
+    "Archives": archives_extensions,
+    "Audios": audio_extensions
+}
 
-
-def number_count(file):
-    with open(file, "r") as f:
-        num_read = f.read()
-        num = [char for char in num_read if char.isdigit()]
-
-    return (f"{len(num)} total numbers in {file}")
-
-
-def word_frequency(file):
-    unique = {}
-
-    with open(file, "r") as f:
-        text = f.read().lower().replace(",", " ")
-        words = text.split()
-
-    for word in words:
-        if word in unique:
-            unique[word] += 1
-        else:
-            unique[word] = 1
-
-    result = ""
-    for key, value in sorted(unique.items()):
-        result += f"{key} : {value}\n"
-    return result
-
-
-
-
-if len(sys.argv) < 3 or sys.argv[0] == "-help":
-    print("Usage: python file-analyzer.py <filename> <flag>")
-    print("Flags: --count-let, --count-word, --count-num, --word-freq")
-    sys.exit()
-
-arg3 = sys.argv[2]
-txtfile = sys.argv[1]
-try:
-    if arg3 == "--count-let":
-        print(letter_count(txtfile))
-    elif arg3 == "--count-word":
-        print(word_count(txtfile))
-    elif arg3 == "--count-num":
-        print(number_count(txtfile))
-    elif arg3 == "--word-freq":
-        print(word_frequency(txtfile))
+for file in downloads.iterdir():
+    if file.is_file():
+        for folder, extensions in file_types.items():
+            if file.suffix.lower() in extensions:
+                shutil.move(file, downloads / folder / file.name)
+                break
     else:
-        print("Flags: --count-let, --count-word, --count-num, --word-freq")
-except FileNotFoundError:
-    print("File not found! Are you sure the file exists?")
+        print(f"{file.name} is a folder though?")
